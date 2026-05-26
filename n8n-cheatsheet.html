@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>n8n Master Cheatsheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --border: #1e2d45;
+    --accent: #ea580c;
+    --accent2: #f97316;
+    --teal: #0ea5e9;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --purple: #a855f7;
+    --pink: #ec4899;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --tag-bg: #1e2d45;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 24px;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    border-left: 4px solid var(--accent);
+    padding: 0 0 0 20px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header-left {}
+  .header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .header h1 span { color: var(--accent); }
+  .header-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .badge-orange { background: rgba(234,88,12,0.15); color: var(--accent2); border: 1px solid rgba(234,88,12,0.3); }
+  .badge-teal   { background: rgba(14,165,233,0.12); color: var(--teal);   border: 1px solid rgba(14,165,233,0.3); }
+  .badge-green  { background: rgba(34,197,94,0.12);  color: var(--green);  border: 1px solid rgba(34,197,94,0.3); }
+
+  /* GRID */
+  .grid { display: grid; gap: 14px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .span-2 { grid-column: span 2; }
+  .span-3 { grid-column: span 3; }
+  .span-4 { grid-column: span 4; }
+
+  /* SECTION TITLES */
+  .section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .card.c-orange::before { background: linear-gradient(90deg, var(--accent), transparent); }
+  .card.c-teal::before   { background: linear-gradient(90deg, var(--teal), transparent); }
+  .card.c-green::before  { background: linear-gradient(90deg, var(--green), transparent); }
+  .card.c-yellow::before { background: linear-gradient(90deg, var(--yellow), transparent); }
+  .card.c-purple::before { background: linear-gradient(90deg, var(--purple), transparent); }
+  .card.c-pink::before   { background: linear-gradient(90deg, var(--pink), transparent); }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-title .icon { font-size: 14px; }
+  .card-title.orange { color: var(--accent2); }
+  .card-title.teal   { color: var(--teal); }
+  .card-title.green  { color: var(--green); }
+  .card-title.yellow { color: var(--yellow); }
+  .card-title.purple { color: var(--purple); }
+  .card-title.pink   { color: var(--pink); }
+
+  /* NODE GRID */
+  .node-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .node-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 7px 9px;
+  }
+  .node-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 2px;
+  }
+  .node-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* KEY-VALUE LIST */
+  .kv-list { display: flex; flex-direction: column; gap: 6px; }
+  .kv-row { display: flex; gap: 8px; align-items: flex-start; }
+  .kv-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent2);
+    min-width: 90px;
+    padding-top: 1px;
+    flex-shrink: 0;
+  }
+  .kv-val { font-size: 12px; color: var(--text); line-height: 1.4; }
+
+  /* BULLET LIST */
+  .bullet-list { display: flex; flex-direction: column; gap: 5px; }
+  .bullet-item { display: flex; gap: 8px; align-items: flex-start; font-size: 12px; line-height: 1.4; }
+  .bullet-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    margin-top: 5px; flex-shrink: 0;
+    background: var(--accent);
+  }
+  .bullet-dot.teal   { background: var(--teal); }
+  .bullet-dot.green  { background: var(--green); }
+  .bullet-dot.yellow { background: var(--yellow); }
+  .bullet-dot.purple { background: var(--purple); }
+  .bullet-dot.pink   { background: var(--pink); }
+
+  /* CODE SNIPPET */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 8px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: #c9d1d9;
+    line-height: 1.6;
+    white-space: pre;
+    overflow-x: auto;
+    margin-top: 6px;
+  }
+  .code-block .kw  { color: #ff7b72; }
+  .code-block .str { color: #a5d6ff; }
+  .code-block .cmt { color: #8b949e; }
+  .code-block .fn  { color: #d2a8ff; }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    row-gap: 6px;
+    margin-top: 4px;
+  }
+  .flow-node {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .flow-arrow {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0 3px;
+  }
+  .flow-node.trigger { color: var(--green);  border-color: rgba(34,197,94,0.3); }
+  .flow-node.process { color: var(--teal);   border-color: rgba(14,165,233,0.3); }
+  .flow-node.logic   { color: var(--yellow); border-color: rgba(234,179,8,0.3); }
+  .flow-node.output  { color: var(--pink);   border-color: rgba(236,72,153,0.3); }
+  .flow-node.error   { color: var(--accent); border-color: rgba(234,88,12,0.3); }
+
+  /* TAG */
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin: 2px 2px 2px 0;
+  }
+  .tag-orange { background: rgba(234,88,12,0.15); color: var(--accent2); }
+  .tag-teal   { background: rgba(14,165,233,0.12); color: var(--teal); }
+  .tag-green  { background: rgba(34,197,94,0.12);  color: var(--green); }
+  .tag-yellow { background: rgba(234,179,8,0.12);  color: var(--yellow); }
+  .tag-purple { background: rgba(168,85,247,0.12); color: var(--purple); }
+  .tag-pink   { background: rgba(236,72,153,0.12); color: var(--pink); }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-align: left;
+    padding: 5px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    font-size: 11.5px;
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(30,45,69,0.6);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 11px; color: #fff; }
+
+  /* EXAM TIPS */
+  .tip-card {
+    background: rgba(234,88,12,0.07);
+    border: 1px solid rgba(234,88,12,0.25);
+    border-radius: 6px;
+    padding: 9px 12px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-top: 6px;
+  }
+  .tip-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .tip-text { font-size: 12px; line-height: 1.5; color: var(--text); }
+  .tip-text strong { color: var(--accent2); }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    margin: 16px 0;
+  }
+
+  /* VIDEO SOURCE PILLS */
+  .src { display: inline-block; }
+  .src-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .v1 { background: rgba(14,165,233,0.15); color: var(--teal); }
+  .v2 { background: rgba(34,197,94,0.12);  color: var(--green); }
+  .v3 { background: rgba(168,85,247,0.12); color: var(--purple); }
+  .v4 { background: rgba(234,179,8,0.12);  color: var(--yellow); }
+  .v5 { background: rgba(234,88,12,0.12);  color: var(--accent2); }
+
+  .small { font-size: 10.5px; }
+  .mono  { font-family: 'JetBrains Mono', monospace; }
+  .muted { color: var(--muted); }
+  .white { color: #fff; }
+
+  /* PRINT-FRIENDLY */
+  @media print {
+    body { background: white; color: black; padding: 12px; font-size: 11px; }
+    .card { border: 1px solid #ccc; background: #f9f9f9; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>n<span>8</span>n Master Cheatsheet</h1>
+    <div class="header-sub">COMPILED FROM 5 VIDEO SOURCES · BEGINNER → MCP/AI AGENTIC</div>
+  </div>
+  <div class="badge-row">
+    <span class="badge badge-teal">V1 Intro to Automation</span>
+    <span class="badge badge-green">V2 APIs &amp; Webhooks</span>
+    <span class="badge badge-orange">V3 Nodes</span>
+    <span class="badge badge-teal">V4 Data Handling</span>
+    <span class="badge badge-green">V5 MCP + AI Flows</span>
+  </div>
+</div>
+
+<!-- ROW 1: What is n8n + Core Architecture -->
+<div class="section-title">01 · WHAT IS n8n &amp; CORE ARCHITECTURE</div>
+<div class="grid grid-3" style="margin-bottom:14px">
+
+  <div class="card c-teal">
+    <div class="card-title teal"><span class="icon">⚡</span>What is n8n?</div>
+    <div class="bullet-list">
+      <div class="bullet-item"><div class="bullet-dot teal"></div><span>Open-source workflow automation platform (self-host or cloud)</span></div>
+      <div class="bullet-item"><div class="bullet-dot teal"></div><span>500+ built-in integrations (nodes) for apps, APIs, databases</span></div>
+      <div class="bullet-item"><div class="bullet-dot teal"></div><span>Visual drag-and-drop canvas — no code required for most tasks</span></div>
+      <div class="bullet-item"><div class="bullet-dot teal"></div><span>Supports custom JS/Python logic inside workflows</span></div>
+      <div class="bullet-item"><div class="bullet-dot teal"></div><span>Unlike Zapier — source code is public, self-hostable, extendable</span></div>
+    </div>
+    <div style="margin-top:10px">
+      <span class="tag tag-teal">Cloud</span>
+      <span class="tag tag-teal">npm install -g n8n</span>
+      <span class="tag tag-teal">Docker</span>
+    </div>
+  </div>
+
+  <div class="card c-orange">
+    <div class="card-title orange"><span class="icon">🏗</span>Workflow Anatomy</div>
+    <div class="flow" style="margin-bottom:10px">
+      <div class="flow-node trigger">Trigger</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node process">Node(s)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node logic">Logic</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node output">Output</div>
+    </div>
+    <div class="kv-list">
+      <div class="kv-row"><div class="kv-key">Workflow</div><div class="kv-val">Full automation pipeline from trigger to result</div></div>
+      <div class="kv-row"><div class="kv-key">Node</div><div class="kv-val">A single step — has inputs &amp; outputs, processes data</div></div>
+      <div class="kv-row"><div class="kv-key">Trigger</div><div class="kv-val">First node — starts the workflow (no input connector)</div></div>
+      <div class="kv-row"><div class="kv-key">Connection</div><div class="kv-val">Arrow linking node outputs to next node inputs</div></div>
+      <div class="kv-row"><div class="kv-key">Execution</div><div class="kv-val">One run of the entire workflow</div></div>
+    </div>
+  </div>
+
+  <div class="card c-green">
+    <div class="card-title green"><span class="icon">🖥</span>Editor UI</div>
+    <div class="bullet-list">
+      <div class="bullet-item"><div class="bullet-dot green"></div><span><strong>Workflow Canvas</strong> — drag, drop, connect nodes</span></div>
+      <div class="bullet-item"><div class="bullet-dot green"></div><span><strong>Nodes Panel</strong> — left sidebar with all 500+ integrations</span></div>
+      <div class="bullet-item"><div class="bullet-dot green"></div><span><strong>Executions Tab</strong> — view past run history &amp; data</span></div>
+      <div class="bullet-item"><div class="bullet-dot green"></div><span><strong>Credentials</strong> — secure storage for API keys/OAuth</span></div>
+      <div class="bullet-item"><div class="bullet-dot green"></div><span><strong>Settings</strong> — workflow name, error workflow, timezone</span></div>
+      <div class="bullet-item"><div class="bullet-dot green"></div><span>Import/export workflows as <span class="mono">.json</span> for sharing</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 2: APIs & Webhooks -->
+<div class="section-title">02 · APIs &amp; WEBHOOKS <span class="src-pill v2">Video 2</span></div>
+<div class="grid grid-4" style="margin-bottom:14px">
+
+  <div class="card c-teal span-2">
+    <div class="card-title teal"><span class="icon">🔌</span>APIs — How n8n Uses Them</div>
+    <div class="kv-list">
+      <div class="kv-row"><div class="kv-key">What is API</div><div class="kv-val">Interface for apps to talk to each other. Sends/receives structured data (usually JSON)</div></div>
+      <div class="kv-row"><div class="kv-key">REST API</div><div class="kv-val">Uses HTTP methods: GET (read), POST (create), PUT (update), DELETE (remove)</div></div>
+      <div class="kv-row"><div class="kv-key">Auth methods</div><div class="kv-val">API Key in header, OAuth 2.0 (token-based), Basic Auth (user:pass), Bearer token</div></div>
+      <div class="kv-row"><div class="kv-key">HTTP Request</div><div class="kv-val">Universal node — call ANY REST API even without a native n8n node</div></div>
+      <div class="kv-row"><div class="kv-key">Response</div><div class="kv-val">Always JSON — passed as items to next node in the workflow</div></div>
+    </div>
+  </div>
+
+  <div class="card c-purple span-2">
+    <div class="card-title purple"><span class="icon">🪝</span>Webhooks</div>
+    <div class="kv-list">
+      <div class="kv-row"><div class="kv-key">Definition</div><div class="kv-val">Push-based: external service sends data to n8n instantly when event fires</div></div>
+      <div class="kv-row"><div class="kv-key">vs Polling</div><div class="kv-val">Webhooks are event-driven (real-time); polling checks repeatedly on schedule</div></div>
+      <div class="kv-row"><div class="kv-key">Test URL</div><div class="kv-val">Use during development — displays data live in canvas</div></div>
+      <div class="kv-row"><div class="kv-key">Prod URL</div><div class="kv-val">Active after workflow published — runs silently in background</div></div>
+      <div class="kv-row"><div class="kv-key">Max payload</div><div class="kv-val">16 MB (configurable via <span class="mono">N8N_PAYLOAD_SIZE_MAX</span> env var)</div></div>
+    </div>
+    <div style="margin-top:8px">
+      <span class="tag tag-purple">Headers</span>
+      <span class="tag tag-purple">Body (JSON)</span>
+      <span class="tag tag-purple">Query Params</span>
+      <span class="tag tag-purple">Path Params</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 3: Nodes Reference -->
+<div class="section-title">03 · NODE TYPES REFERENCE <span class="src-pill v3">Video 3</span></div>
+<div class="grid grid-2" style="margin-bottom:14px">
+
+  <div class="card c-green">
+    <div class="card-title green"><span class="icon">▶</span>Trigger Nodes (starts workflow)</div>
+    <div class="node-grid">
+      <div class="node-item">
+        <div class="node-name">Manual Trigger</div>
+        <div class="node-desc">Run on-demand by clicking "Execute"</div>
+      </div>
+      <div class="node-item">
+        <div class="node-name">Schedule Trigger</div>
+        <div class="node-desc">Cron-based — runs at set times/intervals</div>
+      </div>
+      <div class="node-item">
+        <div class="node-name">Webhook</div>
+        <div class="node-desc">HTTP push from external service</div>
+      </div>
+      <div class="node-item">
+        <div class="node-name">Form Trigger</div>
+        <div class="node-desc">Capture user form submissions</div>
+      </div>
+      <div class="node-item">
+        <div class="node-name">Email Trigger</div>
+        <div class="node-desc">Fires when email received (IMAP)</div>
+      </div>
+      <div class="node-item">
+        <div class="node-name">Error Trigger</div>
+        <div class="node-desc">Activates when another workflow fails</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card c-teal">
+    <div class="card-title teal"><span class="icon">⚙</span>Action &amp; Core Nodes</div>
+    <div class="node-grid">
+      <div class="node-item">
+        <div class="node-name">HTTP Request</div>
+        <div class="node-desc">Call any REST API (universal)</div>
+      </div>
+      <div class="node-item">
+        <div class="node-name">Edit Fields (Set)</div>
+        <div class="node-desc">Create/rename/delete data fields</div>
+      </div>
+      <div class="node-item">
+        <div class="node-name">IF Node</div>
+        <div class="node-desc">Binary true/false branching logic</div>
+      </div>
+      <div class="node-item">
+        <div class="node-name">Switch Node</div>
+        <div class="node-desc">Route to 3+ paths based on value</div>
+      </div>
+      <div class="node-item">
+        <div class="node-name">Merge Node</div>
+        <div class="node-desc">Combine data from multiple branches</div>
+      </div>
+      <div class="node-item">
+        <div class="node-name">Code Node</div>
+        <div class="node-desc">Custom JS or Python logic</div>
+      </div>
+      <div class="node-item">
+        <div class="node-name">Split In Batches</div>
+        <div class="node-desc">Loop through items in chunks</div>
+      </div>
+      <div class="node-item">
+        <div class="node-name">Stop &amp; Error</div>
+        <div class="node-desc">Halt workflow with custom message</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 4: Data Handling -->
+<div class="section-title">04 · DATA HANDLING IN n8n <span class="src-pill v4">Video 4</span></div>
+<div class="grid grid-3" style="margin-bottom:14px">
+
+  <div class="card c-yellow">
+    <div class="card-title yellow"><span class="icon">📦</span>Data Structure</div>
+    <div class="bullet-list">
+      <div class="bullet-item"><div class="bullet-dot yellow"></div><span>All data flows as an <strong>array of items</strong> (JSON objects)</span></div>
+      <div class="bullet-item"><div class="bullet-dot yellow"></div><span>Each item = <span class="mono">{ json: {...}, binary: {...} }</span></span></div>
+      <div class="bullet-item"><div class="bullet-dot yellow"></div><span>Nodes process items <strong>one by one</strong> unless explicitly looped</span></div>
+      <div class="bullet-item"><div class="bullet-dot yellow"></div><span>Reference fields with <span class="mono">{{ $json.fieldName }}</span></span></div>
+      <div class="bullet-item"><div class="bullet-dot yellow"></div><span>Access previous node: <span class="mono">{{ $node["NodeName"].json.field }}</span></span></div>
+      <div class="bullet-item"><div class="bullet-dot yellow"></div><span>Binary data (files, images) stored separately in <span class="mono">binary</span> key</span></div>
+    </div>
+    <div class="code-block"><span class="cmt">// Item structure</span>
+[
+  { <span class="str">"json"</span>: { <span class="str">"name"</span>: <span class="str">"Alice"</span>, <span class="str">"email"</span>: <span class="str">"..."</span> } },
+  { <span class="str">"json"</span>: { <span class="str">"name"</span>: <span class="str">"Bob"</span>,   <span class="str">"email"</span>: <span class="str">"..."</span> } }
+]</div>
+  </div>
+
+  <div class="card c-orange">
+    <div class="card-title orange"><span class="icon">🔄</span>Expressions &amp; Variables</div>
+    <div class="kv-list">
+      <div class="kv-row"><div class="kv-key">$json</div><div class="kv-val">Current item's JSON data</div></div>
+      <div class="kv-row"><div class="kv-key">$input</div><div class="kv-val">All input items (array)</div></div>
+      <div class="kv-row"><div class="kv-key">$node[name]</div><div class="kv-val">Data from a specific named node</div></div>
+      <div class="kv-row"><div class="kv-key">$now</div><div class="kv-val">Current timestamp (ISO format)</div></div>
+      <div class="kv-row"><div class="kv-key">$vars</div><div class="kv-val">Workflow variables (persistent)</div></div>
+      <div class="kv-row"><div class="kv-key">$env</div><div class="kv-val">Environment variables</div></div>
+      <div class="kv-row"><div class="kv-key">$workflow</div><div class="kv-val">Workflow metadata (id, name)</div></div>
+      <div class="kv-row"><div class="kv-key">$runIndex</div><div class="kv-val">Current iteration index in loop</div></div>
+    </div>
+  </div>
+
+  <div class="card c-pink">
+    <div class="card-title pink"><span class="icon">🔀</span>Logic Nodes Compared</div>
+    <table>
+      <tr><th>Node</th><th>Use When</th><th>Outputs</th></tr>
+      <tr><td>IF</td><td>Binary decision (true/false)</td><td>2 (true / false)</td></tr>
+      <tr><td>Switch</td><td>3+ routing conditions</td><td>N outputs</td></tr>
+      <tr><td>Filter</td><td>Drop items not matching rule</td><td>1 (kept)</td></tr>
+      <tr><td>Merge</td><td>Combine multiple branches</td><td>1 merged</td></tr>
+      <tr><td>Split</td><td>Loop each item in batches</td><td>1 + done</td></tr>
+    </table>
+    <div class="tip-card" style="margin-top:8px">
+      <div class="tip-icon">💡</div>
+      <div class="tip-text"><strong>Split &gt; Process &gt; Merge</strong> is the most common pattern for handling multiple items differently then re-combining them.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 5: Error Handling & Debugging -->
+<div class="section-title">05 · ERROR HANDLING &amp; DEBUGGING <span class="src-pill v3">Video 3–4</span></div>
+<div class="grid grid-2" style="margin-bottom:14px">
+
+  <div class="card c-orange">
+    <div class="card-title orange"><span class="icon">🛡</span>Error Handling Strategies</div>
+    <div class="kv-list">
+      <div class="kv-row"><div class="kv-key">Continue on Error</div><div class="kv-val">Node setting — workflow continues even if this node fails; error passed as output</div></div>
+      <div class="kv-row"><div class="kv-key">Error Output</div><div class="kv-val">Enable on node → splits into Success + Error branches for fine-grained control</div></div>
+      <div class="kv-row"><div class="kv-key">Error Workflow</div><div class="kv-val">Dedicated workflow triggered by Error Trigger — catches failures, sends alerts via Slack/email</div></div>
+      <div class="kv-row"><div class="kv-key">Stop &amp; Error Node</div><div class="kv-val">Deliberately halt with descriptive message to prevent bad data propagating</div></div>
+      <div class="kv-row"><div class="kv-key">Retry on Fail</div><div class="kv-val">Node setting — auto retry N times with delay (good for flaky APIs)</div></div>
+    </div>
+    <div class="flow" style="margin-top:10px">
+      <div class="flow-node process">API Call</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node trigger" style="color:var(--green)">✓ Success</div>
+      <div class="flow-arrow">/</div>
+      <div class="flow-node error">✗ Error → Log</div>
+    </div>
+  </div>
+
+  <div class="card c-yellow">
+    <div class="card-title yellow"><span class="icon">🔬</span>Debugging Techniques</div>
+    <div class="bullet-list">
+      <div class="bullet-item"><div class="bullet-dot yellow"></div><span><strong>Execution Log</strong> — inspect every node's input &amp; output after a run</span></div>
+      <div class="bullet-item"><div class="bullet-dot yellow"></div><span><strong>Pin Data</strong> — freeze a node's output to test downstream nodes without re-triggering</span></div>
+      <div class="bullet-item"><div class="bullet-dot yellow"></div><span><strong>Edit Output</strong> — manually override node output to simulate edge cases</span></div>
+      <div class="bullet-item"><div class="bullet-dot yellow"></div><span><strong>Debug Node</strong> — drop inline to inspect data at any point in real-time</span></div>
+      <div class="bullet-item"><div class="bullet-dot yellow"></div><span><strong>Red node indicator</strong> — visually shows exactly where failure occurred</span></div>
+      <div class="bullet-item"><div class="bullet-dot yellow"></div><span><strong>Server logs</strong> — console output for complex self-hosted debugging</span></div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💡</div>
+      <div class="tip-text"><strong>Workflow = Plumbing.</strong> Always pin data on complex nodes first, test logic nodes independently, then connect end-to-end.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 6: Useful Nodes + Collaboration -->
+<div class="section-title">06 · USEFUL INTEGRATIONS &amp; COLLABORATION</div>
+<div class="grid grid-3" style="margin-bottom:14px">
+
+  <div class="card c-purple">
+    <div class="card-title purple"><span class="icon">🔧</span>Common App Nodes</div>
+    <table>
+      <tr><th>App</th><th>Key Actions</th></tr>
+      <tr><td>Google Sheets</td><td>Read, append, update rows, create sheets</td></tr>
+      <tr><td>Gmail</td><td>Send/read emails, attachments</td></tr>
+      <tr><td>Slack</td><td>Send/get messages, channels</td></tr>
+      <tr><td>Notion</td><td>Create/update pages, databases</td></tr>
+      <tr><td>Airtable</td><td>CRUD records in bases</td></tr>
+      <tr><td>Dropbox</td><td>Upload, move, list files</td></tr>
+      <tr><td>Salesforce</td><td>Create leads, accounts, records</td></tr>
+      <tr><td>OpenAI</td><td>Chat, embeddings, image gen</td></tr>
+    </table>
+  </div>
+
+  <div class="card c-teal">
+    <div class="card-title teal"><span class="icon">🤝</span>Collaboration Features</div>
+    <div class="bullet-list">
+      <div class="bullet-item"><div class="bullet-dot teal"></div><span><strong>Workflow sharing</strong> — export JSON, import in any n8n instance</span></div>
+      <div class="bullet-item"><div class="bullet-dot teal"></div><span><strong>Credentials sharing</strong> — share stored API keys across team (Enterprise)</span></div>
+      <div class="bullet-item"><div class="bullet-dot teal"></div><span><strong>Tags &amp; folders</strong> — organize workflows by project/team</span></div>
+      <div class="bullet-item"><div class="bullet-dot teal"></div><span><strong>Version control</strong> — Git integration for workflow history</span></div>
+      <div class="bullet-item"><div class="bullet-dot teal"></div><span><strong>Workflow templates</strong> — n8n.io/workflows library (1000s of pre-built)</span></div>
+      <div class="bullet-item"><div class="bullet-dot teal"></div><span><strong>Community forum</strong> — community.n8n.io for help &amp; templates</span></div>
+    </div>
+  </div>
+
+  <div class="card c-green">
+    <div class="card-title green"><span class="icon">🏁</span>Workflow Best Practices</div>
+    <div class="bullet-list">
+      <div class="bullet-item"><div class="bullet-dot green"></div><span>Plan with a flowchart (Miro/FigJam) <strong>before</strong> opening n8n</span></div>
+      <div class="bullet-item"><div class="bullet-dot green"></div><span>Start with Manual Trigger, switch to Schedule/Webhook for production</span></div>
+      <div class="bullet-item"><div class="bullet-dot green"></div><span>Always add a <strong>default case</strong> to Switch nodes</span></div>
+      <div class="bullet-item"><div class="bullet-dot green"></div><span>Use <strong>Stop &amp; Error</strong> to block bad data early</span></div>
+      <div class="bullet-item"><div class="bullet-dot green"></div><span>Test with <strong>Test URL</strong> before promoting to production</span></div>
+      <div class="bullet-item"><div class="bullet-dot green"></div><span>Name every node clearly — helps when reading error logs</span></div>
+      <div class="bullet-item"><div class="bullet-dot green"></div><span>Store secrets in <strong>Credentials</strong>, never hardcode in nodes</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 7: MCP + AI -->
+<div class="section-title">07 · n8n MCP SERVER &amp; AI AGENTIC FLOWS <span class="src-pill v5">Video 5 (Chase AI)</span></div>
+<div class="grid grid-4" style="margin-bottom:14px">
+
+  <div class="card c-pink span-2">
+    <div class="card-title pink"><span class="icon">🤖</span>What is n8n MCP Server?</div>
+    <div class="kv-list">
+      <div class="kv-row"><div class="kv-key">MCP</div><div class="kv-val">Model Context Protocol — standardized way for AI models (Claude, GPT-4, Cursor) to discover &amp; call tools</div></div>
+      <div class="kv-row"><div class="kv-key">As Provider</div><div class="kv-val">n8n exposes its workflows as callable tools → AI agents trigger them with structured inputs</div></div>
+      <div class="kv-row"><div class="kv-key">As Consumer</div><div class="kv-val">n8n's AI Agent node uses MCP Client Tool sub-nodes to call external MCP servers during execution</div></div>
+      <div class="kv-row"><div class="kv-key">Natural Lang</div><div class="kv-val">Describe a workflow in plain English → AI generates, validates, tests, and deploys it to n8n</div></div>
+      <div class="kv-row"><div class="kv-key">Self-correct</div><div class="kv-val">AI identifies failing nodes and attempts auto-fix — validates before execution</div></div>
+    </div>
+    <div class="flow" style="margin-top:10px">
+      <div class="flow-node trigger">Claude / Cursor</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node process">MCP Server</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node logic">n8n API</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node output">Live Workflow</div>
+    </div>
+  </div>
+
+  <div class="card c-orange span-2">
+    <div class="card-title orange"><span class="icon">⚙</span>MCP Setup (n8n-MCP)</div>
+    <div class="kv-list">
+      <div class="kv-row"><div class="kv-key">Install</div><div class="kv-val"><span class="mono">npm install -g n8n-mcp</span> or use cloud at dashboard.n8n-mcp.com</div></div>
+      <div class="kv-row"><div class="kv-key">Configure</div><div class="kv-val">Set <span class="mono">N8N_API_URL</span> and <span class="mono">N8N_API_KEY</span> environment variables</div></div>
+      <div class="kv-row"><div class="kv-key">Claude Code</div><div class="kv-val">Add MCP server to <span class="mono">~/.claude/settings.json</span> under mcpServers</div></div>
+      <div class="kv-row"><div class="kv-key">Key tools</div><div class="kv-val">create_workflow, execute_workflow, list_workflows, update_workflow, validate_workflow</div></div>
+      <div class="kv-row"><div class="kv-key">Free tier</div><div class="kv-val">100 tool calls/day on cloud version · Open-source MIT license</div></div>
+    </div>
+    <div style="margin-top:8px">
+      <span class="tag tag-orange">Claude Code</span>
+      <span class="tag tag-orange">Cursor</span>
+      <span class="tag tag-orange">Windsurf</span>
+      <span class="tag tag-orange">Claude Desktop</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 8: Exam Tips -->
+<div class="section-title">08 · EXAM QUICK-FIRE FACTS</div>
+<div class="grid grid-2" style="margin-bottom:14px">
+
+  <div class="card c-green">
+    <div class="card-title green"><span class="icon">🎯</span>Must-Know Distinctions</div>
+    <table>
+      <tr><th>Topic</th><th>Key Fact</th></tr>
+      <tr><td>IF vs Switch</td><td>IF = 2 outputs (true/false). Switch = N outputs. Use Switch for 3+ cases</td></tr>
+      <tr><td>Webhook Test/Prod</td><td>Test URL shows live data in canvas. Prod URL runs silently after publish</td></tr>
+      <tr><td>API vs Webhook</td><td>API = pull (you ask). Webhook = push (they notify you)</td></tr>
+      <tr><td>n8n vs Zapier</td><td>n8n is open-source, self-hostable, supports code logic. Zapier is closed SaaS</td></tr>
+      <tr><td>Schedule Trigger</td><td>Requires workflow to be SAVED and PUBLISHED to fire automatically</td></tr>
+      <tr><td>Merge Modes</td><td>Append, Combine (key match), Choose Branch, Wait for results</td></tr>
+      <tr><td>Error Workflow</td><td>Separate workflow with Error Trigger — not just a node in same flow</td></tr>
+    </table>
+  </div>
+
+  <div class="card c-orange">
+    <div class="card-title orange"><span class="icon">⚡</span>Exam Tips &amp; Gotchas</div>
+    <div class="tip-card">
+      <div class="tip-icon">⚠️</div>
+      <div class="tip-text"><strong>Trigger nodes have NO input arrow</strong> — only outgoing connections. First node = trigger.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">⚠️</div>
+      <div class="tip-text"><strong>Data is always an array of items</strong> — not a single object. Even one record = <span class="mono">[{ json: {...} }]</span></div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">⚠️</div>
+      <div class="tip-text"><strong>execute_workflow MCP tool</strong> defaults to production mode (published workflow). Override with manual execution mode for testing.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">⚠️</div>
+      <div class="tip-text"><strong>Merge node can force both IF branches to execute</strong> — even if IF sends no data down false branch, Merge causes it to run anyway.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💡</div>
+      <div class="tip-text"><strong>Always flowchart before building.</strong> Verify your required apps and actions exist in n8n before starting the workflow. Not everything is automatable with pure rules.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 9: Full Reference Table -->
+<div class="section-title">09 · QUICK NODE REFERENCE</div>
+<div class="card c-teal" style="margin-bottom:14px">
+  <div class="grid grid-3" style="gap:0">
+    <div>
+      <table>
+        <tr><th>Trigger Nodes</th><th>Purpose</th></tr>
+        <tr><td>Manual</td><td>Click-to-run in editor</td></tr>
+        <tr><td>Schedule</td><td>Cron / interval</td></tr>
+        <tr><td>Webhook</td><td>HTTP push trigger</td></tr>
+        <tr><td>Form Trigger</td><td>Capture form data</td></tr>
+        <tr><td>Email Trigger</td><td>On email received</td></tr>
+        <tr><td>Error Trigger</td><td>Workflow failure catch</td></tr>
+        <tr><td>MCP Server Trigger</td><td>AI agent calls n8n</td></tr>
+      </table>
+    </div>
+    <div style="border-left:1px solid var(--border); padding-left:14px">
+      <table>
+        <tr><th>Logic / Flow Nodes</th><th>Purpose</th></tr>
+        <tr><td>IF</td><td>True/false branch</td></tr>
+        <tr><td>Switch</td><td>Multi-path routing</td></tr>
+        <tr><td>Filter</td><td>Remove items</td></tr>
+        <tr><td>Merge</td><td>Join branches</td></tr>
+        <tr><td>Split In Batches</td><td>Chunk-based loops</td></tr>
+        <tr><td>Wait</td><td>Pause execution</td></tr>
+        <tr><td>Stop &amp; Error</td><td>Halt + message</td></tr>
+      </table>
+    </div>
+    <div style="border-left:1px solid var(--border); padding-left:14px">
+      <table>
+        <tr><th>Data / Utility Nodes</th><th>Purpose</th></tr>
+        <tr><td>HTTP Request</td><td>Any REST API</td></tr>
+        <tr><td>Edit Fields</td><td>Set / transform fields</td></tr>
+        <tr><td>Code</td><td>Custom JS / Python</td></tr>
+        <tr><td>AI Agent</td><td>LLM reasoning loop</td></tr>
+        <tr><td>MCP Client Tool</td><td>Call external MCP</td></tr>
+        <tr><td>Debug</td><td>Inspect data inline</td></tr>
+        <tr><td>Aggregate</td><td>Combine item arrays</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="display:flex; justify-content:space-between; align-items:center; padding-top:8px; border-top:1px solid var(--border)">
+  <div class="header-sub">n8n MASTER CHEATSHEET · COMPILED MAY 2026 · BEGINNER COURSE (4 VIDEOS) + MCP/AI VIDEO</div>
+  <div class="badge-row">
+    <span class="badge badge-orange">docs.n8n.io</span>
+    <span class="badge badge-teal">n8n.io/workflows</span>
+    <span class="badge badge-green">community.n8n.io</span>
+  </div>
+</div>
+
+</body>
+</html>
